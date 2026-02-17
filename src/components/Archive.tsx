@@ -190,49 +190,30 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
                       )}
                     </div>
 
-                    {/* Platforms & Actions */}
-                    <div className="flex-shrink-0 flex items-center gap-2">
-                      <div className="flex gap-1.5">
-                        {content["YouTube"] && (
-                          <div className="w-7 h-7 rounded bg-red-50 flex items-center justify-center">
-                            <Icons.Play className="w-3.5 h-3.5 text-red-600" />
-                          </div>
-                        )}
-                        {content["TikTok"] && (
-                          <div className="w-7 h-7 rounded bg-black flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">TT</span>
-                          </div>
-                        )}
-                        {content["X.com"] && (
-                          <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">X</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex gap-1 pl-2 border-l border-slate-200">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEditClick?.(content.originalIdx as number, content);
-                          }}
-                          className="p-1.5 hover:bg-blue-50 rounded transition-colors"
-                          title="Edit"
-                        >
-                          <Icons.Edit className="w-4 h-4 text-blue-600" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (confirm('Are you sure you want to delete this content?')) {
-                              onDeleteClick?.(content.originalIdx as number);
-                            }
-                          }}
-                          className="p-1.5 hover:bg-red-50 rounded transition-colors"
-                          title="Delete"
-                        >
-                          <Icons.Trash className="w-4 h-4 text-red-600" />
-                        </button>
-                      </div>
+                    {/* Actions */}
+                    <div className="flex-shrink-0 flex items-center gap-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditClick?.(content.originalIdx as number, content);
+                        }}
+                        className="p-1.5 hover:bg-blue-50 rounded transition-colors"
+                        title="Edit"
+                      >
+                        <Icons.Edit className="w-4 h-4 text-blue-600" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm('Are you sure you want to delete this content?')) {
+                            onDeleteClick?.(content.originalIdx as number);
+                          }
+                        }}
+                        className="p-1.5 hover:bg-red-50 rounded transition-colors"
+                        title="Delete"
+                      >
+                        <Icons.Trash className="w-4 h-4 text-red-600" />
+                      </button>
                     </div>
                     <Icons.ChevronDown
                       className={`flex-shrink-0 w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
