@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { formatDate, daysUntil, isUpcoming } from '@/src/lib/utils';
 import { Icons } from './Icons';
 
@@ -26,24 +26,36 @@ interface TimelineProps {
 
 export default function Timeline({ contents, onEditClick, onDeleteClick }: TimelineProps) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [filterType, setFilterType] = useState<'all' | 'Primary' | 'Short'>('all');
 
-  const upcoming = contents
-    .map((c, idx) => ({ ...c, originalIdx: idx }))
-    .filter(c => c["Publication Date"] && isUpcoming(c["Publication Date"]))
-    .sort((a, b) => {
-      const dateA = new Date(a["Publication Date"] || '');
-      const dateB = new Date(b["Publication Date"] || '');
-      const dateCompare = dateA.getTime() - dateB.getTime();
+  const upcoming = useMemo(() => {
+    let filtered = contents
+      .map((c, idx) => ({ ...c, originalIdx: idx }))
+      .filter(c => c["Publication Date"] && isUpcoming(c["Publication Date"]))
+      .filter(c => filterType === 'all' || c["Type"] === filterType)
+      .sort((a, b) => {
+        const dateA = new Date(a["Publication Date"] || '');
+        const dateB = new Date(b["Publication Date"] || '');
+        let dateCompare = dateA.getTime() - dateB.getTime();
 
-      // Se stessa data: Primary prima di Short
-      if (dateCompare === 0) {
-        const typeA = a["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
-        const typeB = b["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
-        return typeA - typeB;
-      }
+        // Applica ordinamento ascendente/discendente
+        if (sortOrder === 'desc') {
+          dateCompare = -dateCompare;
+        }
 
-      return dateCompare;
-    });
+        // Se stessa data: Primary prima di Short
+        if (dateCompare === 0) {
+          const typeA = a["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
+          const typeB = b["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
+          return typeA - typeB;
+        }
+
+        return dateCompare;
+      });
+
+    return filtered;
+  }, [contents, sortOrder, filterType]);
 
   const getPriorityBadge = (dateString?: string | null) => {
     if (!dateString) return null;
@@ -69,6 +81,27 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
           <div className="text-4xl font-bold text-blue-600">{upcoming.length}</div>
           <p className="text-sm text-slate-600">scheduled</p>
         </div>
+      </div>
+
+      {/* Sort & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+          className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
+        >
+          <option value="asc">Date: Earliest First</option>
+          <option value="desc">Date: Latest First</option>
+        </select>
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value as 'all' | 'Primary' | 'Short')}
+          className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
+        >
+          <option value="all">All types</option>
+          <option value="Primary">Primary</option>
+          <option value="Short">Short</option>
+        </select>
       </div>
 
       {upcoming.length === 0 ? (

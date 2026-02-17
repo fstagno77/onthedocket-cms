@@ -27,6 +27,7 @@ interface ArchiveProps {
 export default function Archive({ contents, onEditClick, onDeleteClick }: ArchiveProps) {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const published = useMemo(() => {
@@ -39,7 +40,12 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
       .sort((a, b) => {
         const dateA = new Date(a["Publication Date"] || '');
         const dateB = new Date(b["Publication Date"] || '');
-        const dateCompare = dateB.getTime() - dateA.getTime();
+        let dateCompare = dateB.getTime() - dateA.getTime();
+
+        // Applica ordinamento ascendente/discendente
+        if (sortOrder === 'asc') {
+          dateCompare = -dateCompare;
+        }
 
         // Se stessa data: Primary prima di Short
         if (dateCompare === 0) {
@@ -60,7 +66,7 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
 
         return matchesSearch && matchesType;
       });
-  }, [contents, search, filterType]);
+  }, [contents, search, filterType, sortOrder]);
 
   const types = Array.from(new Set(contents.map(c => c["Type"]).filter(Boolean))) as string[];
 
@@ -75,7 +81,7 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3">
         <div className="flex-1 relative">
           <Icons.Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
           <input
@@ -86,16 +92,26 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
             className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
-        >
-          <option value="all">All types</option>
-          {types.map(type => (
-            <option key={type} value={type}>{type}</option>
-          ))}
-        </select>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
+          >
+            <option value="desc">Date: Latest First</option>
+            <option value="asc">Date: Earliest First</option>
+          </select>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
+          >
+            <option value="all">All types</option>
+            {types.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Results Counter */}

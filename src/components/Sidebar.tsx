@@ -16,7 +16,7 @@ export default function Sidebar({ activeSection = 'timeline', onNavigate }: Side
   const menuItems = [
     {
       id: 'timeline',
-      label: 'Upcoming Content',
+      label: 'Upcoming',
       icon: Icons.Calendar,
       href: '#timeline'
     },
