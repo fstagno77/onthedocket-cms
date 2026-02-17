@@ -82,7 +82,8 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col gap-3">
-        <div className="flex-1 relative">
+        {/* Search Input */}
+        <div className="relative">
           <Icons.Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
           <input
             type="text"
@@ -92,25 +93,36 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
             className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
+
+        {/* Sort & Filter Controls */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
-          >
-            <option value="desc">Date: Latest First</option>
-            <option value="asc">Date: Earliest First</option>
-          </select>
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
-          >
-            <option value="all">All types</option>
-            {types.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+          {/* Sort Button */}
+          <div className="flex items-center gap-2">
+            <Icons.Sort className="w-5 h-5 text-slate-600 flex-shrink-0" />
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+            >
+              <option value="desc">Date: Latest First</option>
+              <option value="asc">Date: Earliest First</option>
+            </select>
+          </div>
+
+          {/* Filter Button */}
+          <div className="flex items-center gap-2">
+            <Icons.Filter className="w-5 h-5 text-slate-600 flex-shrink-0" />
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+            >
+              <option value="all">All types</option>
+              {types.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

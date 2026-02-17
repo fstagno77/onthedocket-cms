@@ -84,24 +84,35 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
       </div>
 
       {/* Sort & Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-          className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
-        >
-          <option value="asc">Date: Earliest First</option>
-          <option value="desc">Date: Latest First</option>
-        </select>
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value as 'all' | 'Primary' | 'Short')}
-          className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
-        >
-          <option value="all">All types</option>
-          <option value="Primary">Primary</option>
-          <option value="Short">Short</option>
-        </select>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Sort Button */}
+          <div className="flex items-center gap-2">
+            <Icons.Sort className="w-5 h-5 text-slate-600" />
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+            >
+              <option value="asc">Date: Earliest First</option>
+              <option value="desc">Date: Latest First</option>
+            </select>
+          </div>
+
+          {/* Filter Button */}
+          <div className="flex items-center gap-2">
+            <Icons.Filter className="w-5 h-5 text-slate-600" />
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value as 'all' | 'Primary' | 'Short')}
+              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+            >
+              <option value="all">All types</option>
+              <option value="Primary">Primary</option>
+              <option value="Short">Short</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {upcoming.length === 0 ? (
