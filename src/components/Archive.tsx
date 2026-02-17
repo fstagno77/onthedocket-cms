@@ -80,49 +80,55 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
         <p className="text-slate-600">Access all published content</p>
       </div>
 
-      {/* Search & Filter Bar */}
-      <div className="flex flex-col gap-3">
+      {/* Search, Sort & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
         {/* Search Input */}
-        <div className="relative">
+        <div className="flex-1 relative">
           <Icons.Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by title, case, or description..."
+            placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-8 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-3 p-0.5 hover:bg-slate-200 rounded transition-colors"
+              title="Clear search"
+            >
+              <Icons.X className="w-4 h-4 text-slate-600" />
+            </button>
+          )}
         </div>
 
-        {/* Sort & Filter Controls */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Sort Button */}
-          <div className="flex items-center gap-2">
-            <Icons.Sort className="w-5 h-5 text-slate-600 flex-shrink-0" />
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
-            >
-              <option value="desc">Date: Latest First</option>
-              <option value="asc">Date: Earliest First</option>
-            </select>
-          </div>
+        {/* Sort Button */}
+        <div className="flex items-center gap-2">
+          <Icons.Sort className="w-5 h-5 text-slate-600 flex-shrink-0" />
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+          >
+            <option value="desc">Date: Latest First</option>
+            <option value="asc">Date: Earliest First</option>
+          </select>
+        </div>
 
-          {/* Filter Button */}
-          <div className="flex items-center gap-2">
-            <Icons.Filter className="w-5 h-5 text-slate-600 flex-shrink-0" />
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
-            >
-              <option value="all">All types</option>
-              {types.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </div>
+        {/* Filter Button */}
+        <div className="flex items-center gap-2">
+          <Icons.Filter className="w-5 h-5 text-slate-600 flex-shrink-0" />
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 text-sm"
+          >
+            <option value="all">All types</option>
+            {types.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
         </div>
       </div>
 
