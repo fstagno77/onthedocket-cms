@@ -39,7 +39,16 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
       .sort((a, b) => {
         const dateA = new Date(a["Publication Date"] || '');
         const dateB = new Date(b["Publication Date"] || '');
-        return dateB.getTime() - dateA.getTime();
+        const dateCompare = dateB.getTime() - dateA.getTime();
+
+        // Se stessa data: Primary prima di Short
+        if (dateCompare === 0) {
+          const typeA = a["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
+          const typeB = b["Type"]?.toLowerCase() === 'primary' ? 0 : 1;
+          return typeA - typeB;
+        }
+
+        return dateCompare;
       })
       .filter(c => {
         const matchesSearch =
@@ -122,18 +131,24 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
                       <p className="text-sm text-slate-600 mb-2">
                         {formatDate(content["Publication Date"])}
                       </p>
-                      {content["Type"] && (
-                        <span className="inline-block px-2.5 py-1 text-xs font-medium rounded bg-slate-200 text-slate-700">
-                          {content["Type"]}
-                        </span>
-                      )}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-semibold text-slate-900 mb-1 line-clamp-2">
-                        {content["Post Title"]}
-                      </h3>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-base font-semibold text-slate-900 line-clamp-2 flex-1">
+                          {content["Post Title"]}
+                        </h3>
+                        {content["Type"] && (
+                          <span className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
+                            content["Type"]?.toLowerCase() === 'primary'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-purple-100 text-purple-700'
+                          }`}>
+                            {content["Type"]}
+                          </span>
+                        )}
+                      </div>
                       {content["Case"] && (
                         <p className="text-sm text-slate-600">
                           {content["Case"]}
