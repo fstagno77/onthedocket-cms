@@ -185,7 +185,7 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
                     </div>
 
                     {/* Platforms & Actions */}
-                    <div className="flex-shrink-0 flex items-center gap-3">
+                    <div className="flex-shrink-0 flex items-center gap-2">
                       <div className="flex gap-1.5">
                         {content["YouTube"] && (
                           <div className="w-7 h-7 rounded bg-red-50 flex items-center justify-center">
@@ -227,10 +227,10 @@ export default function Archive({ contents, onEditClick, onDeleteClick }: Archiv
                           <Icons.Trash className="w-4 h-4 text-red-600" />
                         </button>
                       </div>
-                      <Icons.ChevronDown
-                        className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                      />
                     </div>
+                    <Icons.ChevronDown
+                      className={`flex-shrink-0 w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                    />
                   </div>
                 </button>
 

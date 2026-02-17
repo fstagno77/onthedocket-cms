@@ -28,12 +28,20 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [filterType, setFilterType] = useState<'all' | 'Primary' | 'Short'>('all');
+  const [search, setSearch] = useState('');
 
   const upcoming = useMemo(() => {
     let filtered = contents
       .map((c, idx) => ({ ...c, originalIdx: idx }))
       .filter(c => c["Publication Date"] && isUpcoming(c["Publication Date"]))
       .filter(c => filterType === 'all' || c["Type"] === filterType)
+      .filter(c => {
+        const matchesSearch =
+          c["Post Title"]?.toLowerCase().includes(search.toLowerCase()) ||
+          c["Case"]?.toLowerCase().includes(search.toLowerCase()) ||
+          c["Description"]?.toLowerCase().includes(search.toLowerCase());
+        return matchesSearch;
+      })
       .sort((a, b) => {
         const dateA = new Date(a["Publication Date"] || '');
         const dateB = new Date(b["Publication Date"] || '');
@@ -55,7 +63,7 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
       });
 
     return filtered;
-  }, [contents, sortOrder, filterType]);
+  }, [contents, sortOrder, filterType, search]);
 
   const getPriorityBadge = (dateString?: string | null) => {
     if (!dateString) return null;
@@ -83,12 +91,25 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
         </div>
       </div>
 
-      {/* Sort & Filter Bar */}
+      {/* Search & Sort & Filter Bar */}
       <div className="flex flex-col gap-3">
+        {/* Search Input */}
+        <div className="relative">
+          <Icons.Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search by title, case, or description..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        {/* Sort & Filter Controls */}
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Sort Button */}
           <div className="flex items-center gap-2">
-            <Icons.Sort className="w-5 h-5 text-slate-600" />
+            <Icons.Sort className="w-5 h-5 text-slate-600 flex-shrink-0" />
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
@@ -101,7 +122,7 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
 
           {/* Filter Button */}
           <div className="flex items-center gap-2">
-            <Icons.Filter className="w-5 h-5 text-slate-600" />
+            <Icons.Filter className="w-5 h-5 text-slate-600 flex-shrink-0" />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as 'all' | 'Primary' | 'Short')}
@@ -175,7 +196,7 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
                     </div>
 
                     {/* Platforms & Actions */}
-                    <div className="flex-shrink-0 flex items-center gap-3">
+                    <div className="flex-shrink-0 flex items-center gap-2">
                       <div className="flex gap-2">
                         {content["YouTube"] && (
                           <div className="w-8 h-8 rounded bg-red-50 flex items-center justify-center" title="YouTube">
@@ -217,10 +238,10 @@ export default function Timeline({ contents, onEditClick, onDeleteClick }: Timel
                           <Icons.Trash className="w-4 h-4 text-red-600" />
                         </button>
                       </div>
-                      <Icons.ChevronDown
-                        className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                      />
                     </div>
+                    <Icons.ChevronDown
+                      className={`flex-shrink-0 w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                    />
                   </div>
                 </button>
 
